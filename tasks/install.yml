@@ -1,0 +1,58 @@
+---
+# tasks file for miniconda
+- name: Check installation of miniconda
+  stat:
+    path: "{{ item.path }}/bin/conda"
+  become: yes
+  become_user: "{{ item.user | d('root') }}"
+  changed_when: no
+  register: miniconda_installed
+  loop: "{{ miniconda_env }}"
+
+- name: Download miniconda installer
+  get_url:
+    url: "{{ miniconda_installer_script_url }}"
+    dest: "/tmp/{{ miniconda_installer_script }}"
+    mode: 0755
+    validate_certs: "{{ miniconda_validate_certs | d(omit) }}"
+    checksum: "{{ miniconda_installer_checksums[miniconda_installer_script] | d(omit) }}"
+    force: "{{ 'yes' if miniconda_installer_checksums[miniconda_installer_script] is not defined else 'no' }}"
+
+- name: Check tar is installed
+  package:
+    name: tar
+    state: present
+  when: miniconda_manage_dependencies
+
+- name: Check bzip2 is installed
+  package:
+    name: bzip2
+    state: present
+  when: miniconda_manage_dependencies
+
+- name: Create miniconda directory
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    follow: yes
+  become: yes
+  become_user: "{{ item.user | d('root')}}"
+  loop: "{{ miniconda_env | d([]) }}"
+
+- name: Install miniconda
+  command: '/bin/bash "/tmp/{{ miniconda_installer_script }}" -b -p "{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}"'
+  args:
+    creates: "{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/bin/conda"
+  become: yes
+  become_user: "{{ item.user | d('root')}}"
+  loop: "{{ miniconda_installed.results | selectattr('stat.exists', 'equalto', false) | map(attribute='item') | list }}"
+
+- name: Deploy miniconda condarc
+  template:
+    src: "{{ item.rc_template | d('miniconda.rc.j2') }}"
+    dest: "{{ item.rc_file | d('~/.condarc') }}"
+    mode: "{{ item.rc_mode | d('0644') }}"
+  become: yes
+  become_user: "{{ item.user | d('root')}}"
+  when: miniconda_deploy_condarc
+  loop: "{{ miniconda_env | d([]) }}"

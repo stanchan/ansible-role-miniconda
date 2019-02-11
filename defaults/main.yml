@@ -1,0 +1,54 @@
+---
+# defaults file for miniconda
+
+miniconda_version: latest
+miniconda_python_major_version: 3
+miniconda_installer_script: "Miniconda{{ miniconda_python_major_version }}-{{ miniconda_version }}-{{ miniconda_os_map[ansible_system] }}-{{ miniconda_arch_map[ansible_architecture] }}.{{ 'exe' if ansible_system == 'Win32NT' else 'sh' }}"
+miniconda_installer_script_url: "https://repo.anaconda.com/miniconda/{{ miniconda_installer_script }}"
+miniconda_installer_checksums:
+  Miniconda2-latest-Linux-x86_64.sh: md5:4be03f925e992a8eda03758b72a77298
+  Miniconda2-4.5.12-Linux-x86_64.sh: md5:4be03f925e992a8eda03758b72a77298
+  Miniconda3-latest-Linux-x86_64.sh: md5:866ae9dff53ad0874e1d1a60b1ad1ef8
+  Miniconda3-4.5.12-Linux-x86_64.sh: md5:866ae9dff53ad0874e1d1a60b1ad1ef8
+  Miniconda2-latest-MacOSX-x86_64.sh: md5:76041da218ab91e2c9538a5dc19cd14e
+  Miniconda2-4.5.12-MacOSX-x86_64.sh: md5:76041da218ab91e2c9538a5dc19cd14e
+  Miniconda3-latest-MacOSX-x86_64.sh: md5:a583d1e174e1dc960e87fb4b026a9370
+  Miniconda3-4.5.12-MacOSX-x86_64.sh: md5:a583d1e174e1dc960e87fb4b026a9370
+  Miniconda2-latest-Windows-x86_64.exe: md5:e7626f133e803ac970fe963507c62dc1
+  Miniconda2-4.5.12-Windows-x86_64.exe: md5:e7626f133e803ac970fe963507c62dc1
+  Miniconda3-latest-Windows-x86_64.exe: md5:ec5c5c29892ad45bd840f8ccaf2cbc03
+  Miniconda3-4.5.12-Windows-x86_64.exe: md5:ec5c5c29892ad45bd840f8ccaf2cbc03
+
+miniconda_os_map:
+  Linux: Linux
+  Darwin: MacOSX
+  Win32NT: Windows
+
+miniconda_arch_map:
+  x86_64: x86_64
+  i386: x86
+
+miniconda_prefix: "miniconda{{ miniconda_python_major_version if miniconda_python_major_version == 3 else '' }}"
+miniconda_update: yes
+miniconda_manage_dependencies: yes
+miniconda_validate_certs: yes
+miniconda_deploy_condarc: yes
+
+miniconda_env:
+  - name: conda
+    path: /opt
+    create_opts: "-q"
+    profile_path: "/etc/profile.d/miniconda.sh"
+    deploy_profile_mode: template
+    env:
+      name: default
+      dependencies:
+        - python=3.7.2
+        - pip
+        - jupyter
+        - bokeh
+        - numpy
+        - nodejs
+        - pandas
+      channels:
+        - defaults

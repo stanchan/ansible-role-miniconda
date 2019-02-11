@@ -1,0 +1,7 @@
+---
+# tasks file for miniconda
+- name: Install miniconda
+  include_tasks: install.yml
+
+- name: Configure miniconda
+  include_tasks: configure.yml
