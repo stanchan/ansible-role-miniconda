@@ -1,5 +1,13 @@
 ---
 # tasks file for miniconda
+- name: Install miniconda prereqs
+  include_tasks: prereqs.yml
+  when: miniconda_manage_dependencies
+
+- name: Setup miniconda users
+  include_tasks: users.yml
+  when: miniconda_manage_users
+
 - name: Install miniconda
   include_tasks: install.yml
 

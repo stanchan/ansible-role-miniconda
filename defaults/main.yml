@@ -30,9 +30,26 @@ miniconda_arch_map:
 
 miniconda_prefix: "miniconda{{ miniconda_python_major_version if miniconda_python_major_version == 3 else '' }}"
 miniconda_update: yes
-miniconda_manage_dependencies: yes
+miniconda_manage_dependencies: no
 miniconda_validate_certs: yes
 miniconda_deploy_condarc: yes
+miniconda_manage_groups: no
+miniconda_manage_users: no
+
+miniconda_create_groups:
+  - name: conda
+    gid: 10000
+    system: no
+
+miniconda_create_users:
+  - name: conda
+    uid: 10000
+    group: conda
+    shell: /bin/bash
+    home: "/opt/conda/{{miniconda_prefix}}"
+    createhome: yes
+    comment: "Conda user"
+    system: no
 
 miniconda_env:
   - name: conda

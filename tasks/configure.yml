@@ -1,52 +1,46 @@
 ---
 # tasks file for miniconda
-
 - name: Update miniconda
-  command: '"{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/bin/conda" update conda -y -q'
+  shell: '"{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/bin/conda" update conda -y -q'
   register: miniconda_update
   when: miniconda_update
   changed_when: '"All requested packages already installed" in miniconda_update'
-  become: yes
-  become_user: "{{ item.user | d('root')}}"
   loop: "{{ miniconda_env | d([]) }}"
 
 - name: Create miniconda environment file
   copy:
     content: "{{ item.env | to_yaml(default_flow_style=False) }}"
-    dest: "/tmp/{{ item.name }}-environment.yml"
-  become: yes
-  become_user: "{{ item.user | d('root')}}"
+    dest: "{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/{{ item.name }}-environment.yml"
+    owner: "{{ item.user | d('root') }}"
+    group: "{{ item.group | d('root') }}"
   loop: "{{ miniconda_env | d([]) }}"
 
 - include: environment.yml
-  when: miniconda_env != ""
-
-- name: Create global miniconda profile
-  template:
-    src: "{{ item.profile_template | d('miniconda.sh.j2') }}"
-    dest: "{{ item.profile_path | d('/etc/profile.d/miniconda.sh') }}"
-    mode: "{{ item.profile_mode | d('0644') }}"
-  become: yes
-  become_user: "root"
-  when: item.deploy_profile_mode == 'template' and (item.user is not defined or item.user == 'root')
-  loop: "{{ miniconda_env | d([]) }}"
-
-- name: Deploy miniconda profiles
-  template:
-    src: "{{ item.profile_template | d('miniconda.sh.j2') }}"
-    dest: "{{ item.profile_path }}"
-    mode: "{{ item.profile_mode | d('0644') }}"
-  become: yes
-  become_user: "{{ item.user | d('root')}}"
-  when: item.deploy_profile_mode == 'template' and item.user is defined and item.profile_path is defined
-  loop: "{{ miniconda_env | d([]) }}"
+  when: miniconda_env
 
 - name: Add miniconda to the PATH
   lineinfile:
     dest: "{{ item.profile_path | d('~/.bashrc') }}"
-    line: export PATH={{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/bin:$PATH
+    line: export PATH={{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/bin:{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/envs/{{ item.env.name }}/bin:$PATH
     state: present
-  become: yes
-  become_user: "{{ item.user | d('root')}}"
   when: item.deploy_profile_mode == 'update'
+  become: yes
+  become_user: "{{ item.user | d('root') }}"
+  loop: "{{ miniconda_env | d([]) }}"
+
+- name: Create miniconda profile
+  template:
+    src: "{{ item.profile_template | d('miniconda.sh.j2') }}"
+    dest: "{{ item.profile_path | d('/etc/profile.d/miniconda.sh') }}"
+    mode: "{{ item.profile_mode | d('0644') }}"
+  when: item.deploy_profile_mode == 'template'
+  loop: "{{ miniconda_env | d([]) }}"
+
+- name: Change fusion directory permissions
+  file:
+    path: "{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}"
+    state: directory
+    owner: "{{ item.user | d('root') }}"
+    group: "{{ item.group | d('root') }}"
+    recurse: yes
   loop: "{{ miniconda_env | d([]) }}"

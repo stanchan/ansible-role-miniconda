@@ -1,19 +1,13 @@
 ---
 - name: Create miniconda environment
-  command:
-    '"{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/bin/conda" env create -f "/tmp/{{ item.name }}-environment.yml" {{ item.create_opts | d(omit)}}'
+  shell: '"{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/bin/conda" env create -f "{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/{{ item.name }}-environment.yml" {{ item.create_opts | d(omit)}}'
   args:
     creates: '{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/envs/{{ item.env.name }}'
   register: miniconda_env_create
-  become: yes
-  become_user: "{{ item.user | d('root')}}"
   loop: "{{ miniconda_env | d([]) }}"
 
 - name: Update miniconda environment
-  command:
-    '"{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/bin/conda" env update -n "{{ item.name }}" -f "/tmp/{{ item.name }}-environment.yml" {{ item.update_opts | d(omit) }}'
+  shell: '"{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/bin/conda" env update -n "{{ item.name }}" -f "{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/{{ item.name }}-environment.yml" {{ item.update_opts | d(omit) }}'
   register: miniconda_env_update
   changed_when: '"COMPLETE" in miniconda_env_update.stdout'
-  become: yes
-  become_user: "{{ item.user | d('root')}}"
   loop: "{{ miniconda_env_create.results | selectattr('stdout', 'search', 'skipped') | map(attribute='item') | list }}"

@@ -1,0 +1,19 @@
+---
+- name: Install setfacl support
+  apt:
+    pkg: acl
+    state: present
+  when: ansible_os_family in [ "Debian" ]
+
+- name: install setfacl support
+  yum:
+    name: acl
+    state: present
+  when: ansible_os_family in [ "Redhat" ]
+
+- name: Install archive support
+  package:
+    name:
+      - tar
+      - bzip2
+    state: present

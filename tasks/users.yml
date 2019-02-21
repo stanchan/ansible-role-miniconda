@@ -1,0 +1,26 @@
+---
+# tasks file for miniconda
+
+- name: Create miniconda group
+  group:
+    name: "{{ item.name }}"
+    gid: "{{ item.gid | d(omit) }}"
+    system: "{{ item.system | d('no') }}"
+    state: present
+  when: miniconda_manage_groups and item.name != "root"
+  loop: "{{ miniconda_create_groups }}"
+
+- name: Create jupyterhub user
+  user:
+    name: "{{ item.name }}"
+    uid: "{{ item.uid | d(omit) }}"
+    group: "{{ item.group }}"
+    groups: "{{ item.groups | d(omit) }}"
+    shell: "{{ item.shell | d('/sbin/nologin') }}"
+    home: "{{ item.home | d(omit) }}"
+    comment: "{{ item.comment | d(omit) }}"
+    createhome: "{{ item.createhome | d(omit) }}"
+    system: "{{ item.system | d('no') }}"
+    state: present
+  when: miniconda_manage_users and item.name != "root"
+  loop: "{{ miniconda_create_users }}"
