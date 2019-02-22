@@ -1,5 +1,5 @@
 ---
-- name: Create miniconda environment
+- name: Create miniconda environment (This might take a while...)
   shell: '"{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/bin/conda" env create -f "{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/{{ item.name }}-environment.yml" {{ item.create_opts | d(omit)}}'
   args:
     creates: '{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/envs/{{ item.env.name }}'
