@@ -46,7 +46,7 @@ miniconda_create_users:
     uid: 10000
     group: conda
     shell: /bin/bash
-    home: "/opt/conda/{{miniconda_prefix}}"
+    home: "/opt/conda/{{ miniconda_prefix }}"
     createhome: yes
     comment: "Conda user"
     system: no

@@ -36,7 +36,7 @@
   when: item.deploy_profile_mode == 'template'
   loop: "{{ miniconda_env | d([]) }}"
 
-- name: Change fusion directory permissions
+- name: Change miniconda directory permissions
   file:
     path: "{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}"
     state: directory

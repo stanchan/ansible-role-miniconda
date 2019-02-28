@@ -7,10 +7,12 @@
     gid: "{{ item.gid | d(omit) }}"
     system: "{{ item.system | d('no') }}"
     state: present
-  when: miniconda_manage_groups and item.name != "root"
+  when:
+    - miniconda_manage_groups
+    - item.name != "root"
   loop: "{{ miniconda_create_groups }}"
 
-- name: Create jupyterhub user
+- name: Create miniconda user
   user:
     name: "{{ item.name }}"
     uid: "{{ item.uid | d(omit) }}"
@@ -22,5 +24,7 @@
     createhome: "{{ item.createhome | d(omit) }}"
     system: "{{ item.system | d('no') }}"
     state: present
-  when: miniconda_manage_users and item.name != "root"
+  when:
+    - miniconda_manage_users
+    - item.name != "root"
   loop: "{{ miniconda_create_users }}"
