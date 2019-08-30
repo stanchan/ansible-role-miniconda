@@ -6,17 +6,29 @@ miniconda_python_major_version: 3
 miniconda_installer_script: "Miniconda{{ miniconda_python_major_version }}-{{ miniconda_version }}-{{ miniconda_os_map[ansible_system] }}-{{ miniconda_arch_map[ansible_architecture] }}.{{ 'exe' if ansible_system == 'Win32NT' else 'sh' }}"
 miniconda_installer_script_url: "https://repo.anaconda.com/miniconda/{{ miniconda_installer_script }}"
 miniconda_installer_checksums:
-  Miniconda2-latest-Linux-x86_64.sh: md5:faa7cb0b0c8986ac3cacdbbd00fe4168
+  Miniconda2-latest-Linux-x86_64.sh: md5:3bc6ffc6cda8efa467926dfd92a30bca
+  Miniconda2-4.7.10-Linux-x86_64.sh: md5:3bc6ffc6cda8efa467926dfd92a30bca
+  Miniconda2-4.6.14-Linux-x86_64.sh: md5:faa7cb0b0c8986ac3cacdbbd00fe4168
   Miniconda2-4.5.14-Linux-x86_64.sh: md5:faa7cb0b0c8986ac3cacdbbd00fe4168
-  Miniconda3-latest-Linux-x86_64.sh: md5:718259965f234088d785cad1fbd7de03
+  Miniconda3-latest-Linux-x86_64.sh: md5:1c945f2b3335c7b2b15130b1b2dc5cf4
+  Miniconda3-4.7.10-Linux-x86_64.sh: md5:1c945f2b3335c7b2b15130b1b2dc5cf4
+  Miniconda3-4.6.14-Linux-x86_64.sh: md5:718259965f234088d785cad1fbd7de03
   Miniconda3-4.5.14-Linux-x86_64.sh: md5:718259965f234088d785cad1fbd7de03
-  Miniconda2-latest-MacOSX-x86_64.sh: md5:6665a5911f92dce1cf6d1021249af9db
+  Miniconda2-latest-MacOSX-x86_64.sh: md5:f540257a4b1df264e6f72c75f75620bb
+  Miniconda2-4.7.10-MacOSX-x86_64.sh: md5:f540257a4b1df264e6f72c75f75620bb
+  Miniconda2-4.6.14-MacOSX-x86_64.sh: md5:6665a5911f92dce1cf6d1021249af9db
   Miniconda2-4.5.14-MacOSX-x86_64.sh: md5:6665a5911f92dce1cf6d1021249af9db
-  Miniconda3-latest-MacOSX-x86_64.sh: md5:ffa5f0eead5576fb26b7e6902f5eed09
+  Miniconda3-latest-MacOSX-x86_64.sh: md5:f540257a4b1df264e6f72c75f75620bb
+  Miniconda3-4.7.10-MacOSX-x86_64.sh: md5:f540257a4b1df264e6f72c75f75620bb
+  Miniconda3-4.6.14-MacOSX-x86_64.sh: md5:ffa5f0eead5576fb26b7e6902f5eed09
   Miniconda3-4.5.14-MacOSX-x86_64.sh: md5:ffa5f0eead5576fb26b7e6902f5eed09
-  Miniconda2-latest-Windows-x86_64.exe: md5:f662cd2b2865d891870c9cf505922124
+  Miniconda2-latest-Windows-x86_64.exe: md5:b1f7ffe70409b9b68bd4bf550b67b621
+  Miniconda2-4.7.10-Windows-x86_64.sh: md5:b1f7ffe70409b9b68bd4bf550b67b621
+  Miniconda2-4.6.14-Windows-x86_64.sh: md5:f662cd2b2865d891870c9cf505922124
   Miniconda2-4.5.14-Windows-x86_64.exe: md5:f662cd2b2865d891870c9cf505922124
-  Miniconda3-latest-Windows-x86_64.exe: md5:bb90bcddd1422c79e182ee7e48abfc3d
+  Miniconda3-latest-Windows-x86_64.exe: md5:71130d69fd521f5f38448fa31e4d98de
+  Miniconda3-4.7.10-Windows-x86_64.sh: md5:71130d69fd521f5f38448fa31e4d98de
+  Miniconda3-4.6.14-Windows-x86_64.sh: md5:bb90bcddd1422c79e182ee7e48abfc3d
   Miniconda3-4.5.14-Windows-x86_64.exe: md5:bb90bcddd1422c79e182ee7e48abfc3d
 
 miniconda_os_map:
