@@ -1,13 +1,17 @@
 ---
 - name: Install setfacl support
   apt:
-    pkg: acl
+    pkg:
+      - acl
+      - gcc
     state: present
   when: ansible_os_family in [ "Debian" ]
 
 - name: install setfacl support
   yum:
-    name: acl
+    name:
+      - acl
+      - gcc
     state: present
   when: ansible_os_family in [ "Redhat" ]
 
