@@ -1,23 +1,12 @@
 ---
-- name: Install setfacl support
+- name: Install Debian packages
   apt:
-    pkg:
-      - acl
-      - gcc
+    pkg: "{{ miniconda_packages['Debian'] }}"
     state: present
   when: ansible_os_family in [ "Debian" ]
 
-- name: install setfacl support
+- name: Install Redhat packages
   yum:
-    name:
-      - acl
-      - gcc
+    name: "{{ miniconda_packages['Redhat'] }}"
     state: present
   when: ansible_os_family in [ "Redhat" ]
-
-- name: Install archive support
-  package:
-    name:
-      - tar
-      - bzip2
-    state: present

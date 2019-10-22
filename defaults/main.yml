@@ -40,6 +40,20 @@ miniconda_arch_map:
   x86_64: x86_64
   i386: x86
 
+miniconda_packages:
+  Debian:
+    - acl
+    - gcc
+    - g++
+    - tar
+    - bzip2
+  Redhat:
+    - acl
+    - gcc
+    - g++
+    - tar
+    - bzip2
+
 miniconda_prefix: "miniconda{{ miniconda_python_major_version if miniconda_python_major_version == 3 else '' }}"
 miniconda_update: yes
 miniconda_manage_dependencies: no
