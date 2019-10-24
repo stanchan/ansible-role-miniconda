@@ -3,7 +3,7 @@
 - name: Update miniconda
   shell: '"{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/bin/conda" update conda -y -q'
   register: miniconda_update
-  when: miniconda_update
+  when: miniconda_update|bool
   changed_when: '"All requested packages already installed" in miniconda_update'
   loop: "{{ miniconda_env | d([]) }}"
 
@@ -22,10 +22,10 @@
   lineinfile:
     dest: "{{ item.profile_path | d('~/.bashrc') }}"
     line: export PATH={{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/bin:{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/envs/{{ item.env.name }}/bin:$PATH
+    owner: "{{ item.user | d('root') }}"
+    group: "{{ item.group | d('root') }}"
     state: present
   when: item.deploy_profile_mode == 'update'
-  become: yes
-  become_user: "{{ item.user | d('root') }}"
   loop: "{{ miniconda_env | d([]) }}"
 
 - name: Create miniconda profile
