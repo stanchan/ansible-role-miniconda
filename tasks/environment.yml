@@ -10,4 +10,4 @@
   shell: '"{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/bin/conda" env update -n "{{ item.name }}" -f "{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/{{ item.name }}-environment.yml" {{ item.update_opts | d(omit) }}'
   register: miniconda_env_update
   changed_when: '"COMPLETE" in miniconda_env_update.stdout'
-  loop: "{{ miniconda_env_create.results | selectattr('stdout', 'search', 'skipped') | map(attribute='item') | list }}"
+  loop: "{{ miniconda_env_create.results | selectattr('stdout', 'search', 'skipped') | map(attribute='item') | selectattr('update') | list }}"

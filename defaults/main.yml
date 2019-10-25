@@ -67,6 +67,7 @@ miniconda_validate_certs: yes
 miniconda_deploy_condarc: yes
 miniconda_manage_groups: no
 miniconda_manage_users: no
+miniconda_deploy_profile: no
 
 miniconda_create_groups:
   - name: conda
@@ -87,8 +88,6 @@ miniconda_env:
   - name: conda
     path: /opt
     create_opts: "-q"
-    profile_path: "/etc/profile.d/miniconda.sh"
-    deploy_profile_mode: template
     env:
       name: default
       dependencies:

@@ -18,26 +18,24 @@
 - include: environment.yml
   when: miniconda_env|length > 0
 
-- name: Profile setup
-  block:
-    - name: Add miniconda to the PATH
-      lineinfile:
-        dest: "{{ item.profile_path | d('~/.bashrc') }}"
-        line: export PATH={{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/bin:$PATH
-        owner: "{{ item.user | d('root') }}"
-        group: "{{ item.group | d('root') }}"
-        state: present
-      when: item.deploy_profile_mode == 'update'
-      loop: "{{ miniconda_env | d([]) }}"
+- name: Create global miniconda profile
+  template:
+    src: miniconda.sh.j2
+    dest: /etc/profile.d/miniconda.sh
+    owner: root
+    group: root
+    mode: 0644
+  when: miniconda_deploy_profile|bool
 
-    - name: Create miniconda profile
-      template:
-        src: "{{ item.profile_template | d('miniconda.sh.j2') }}"
-        dest: "{{ item.profile_path | d('/etc/profile.d/miniconda.sh') }}"
-        mode: "{{ item.profile_mode | d('0644') }}"
-      when: item.deploy_profile_mode == 'template'
-      loop: "{{ miniconda_env | d([]) }}"
-  when: item.deploy_profile_mode is defined
+- name: Add miniconda to PATH in bashrc
+  lineinfile:
+    dest: "{{ item.profile | d('~/.bashrc') }}"
+    line: export PATH={{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/bin:$PATH
+    owner: "{{ item.user | d('root') }}"
+    group: "{{ item.group | d('root') }}"
+    state: present
+  when: item.profile is defined
+  loop: "{{ miniconda_env | d([]) }}"
 
 - name: Change miniconda directory permissions
   file:
