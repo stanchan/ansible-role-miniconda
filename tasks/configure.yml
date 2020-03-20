@@ -1,10 +1,17 @@
 ---
 # tasks file for miniconda
-- name: Update miniconda
+- name: Update conda
   shell: '"{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/bin/conda" update conda -y -q'
-  register: miniconda_update
+  register: miniconda_update_results
   when: miniconda_update|bool
-  changed_when: '"All requested packages already installed" in miniconda_update'
+  changed_when: '"All requested packages already installed" in miniconda_update_results'
+  loop: "{{ miniconda_env | d([]) }}"
+
+- name: Update conda-build
+  shell: '"{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/bin/conda" update conda-build -y -q'
+  register: miniconda_build_update_results
+  when: miniconda_build_update|bool
+  changed_when: '"All requested packages already installed" in miniconda_build_update_results'
   loop: "{{ miniconda_env | d([]) }}"
 
 - name: Create miniconda environment file
@@ -27,13 +34,27 @@
     mode: 0644
   when: miniconda_deploy_profile|bool
 
-- name: Add miniconda to PATH in bashrc
-  lineinfile:
-    dest: "{{ item.profile | d('~/.bashrc') }}"
-    line: export PATH={{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/bin:$PATH
+- name: Add miniconda to PATH in profile
+  blockinfile:
+    path: "{{ item.profile | d('~/.bashrc') }}"
     owner: "{{ item.user | d('root') }}"
     group: "{{ item.group | d('root') }}"
-    state: present
+    marker: "# {mark}"
+    marker_begin: ">>> conda initialize >>>"
+    marker_end: "<<< conda initialize <<<"
+    block: |
+      # !! Contents within this block are managed by 'conda init' !!
+      __conda_setup="$('{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+      if [ $? -eq 0 ]; then
+          eval "$__conda_setup"
+      else
+          if [ -f "{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/etc/profile.d/conda.sh" ]; then
+              . "{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/etc/profile.d/conda.sh"
+          else
+              export PATH="{{ item.path }}/{{ item.name }}/{{ miniconda_prefix }}/bin:$PATH"
+          fi
+      fi
+      unset __conda_setup
   when: item.profile is defined
   loop: "{{ miniconda_env | d([]) }}"
 
