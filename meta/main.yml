@@ -14,15 +14,16 @@ galaxy_info:
         - all
     - name: EL
       versions:
+        - 8
         - 7
     - name: Debian
       versions:
+        - 10
         - 9
-        - 8
     - name: Ubuntu
       versions:
+        - bionic
         - xenial
-        - trusty
 
   categories:
     - miniconda
